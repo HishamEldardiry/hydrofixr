@@ -68,7 +68,7 @@ correct_lat_lon_for_MOSART_stream_network <- function(x){
 
   c("BPA", "SEPA", "SWPA", "WAPA") %>%
     map_dfr(function(region){
-      vroom(paste0(dir_, region, ".csv"))
+      vroom(paste0(dir_,"/", region, ".csv"))
     }
     ) %>%
     select(EIA_ID = ID, lat_1_8_, lon_1_8_) ->
