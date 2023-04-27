@@ -45,6 +45,7 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
     plant_data
 
   # run through all result files to extract required flows for each cell
+  message("Extracting required flows for each cell...")
   list.files(WM_results_dir, full.names = T) %>%
     .[grep(".nc", .)] %>%
     map_dfr(function(slice){
