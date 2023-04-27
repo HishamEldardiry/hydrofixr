@@ -52,18 +52,18 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
         extract(select(plant_data, lon_, lat_), df = T) %>%
         # ^^ extract using dam lat and lon
         as_tibble() %>%
-        gather(date, value, -ID) %>% spread(ID, value) %>%
-        mutate(date = as_date(substr(date, 2, nchar(date))))
-    }) %>% arrange(date) %>%
+        gather(flow_date, value, -ID) %>% spread(ID, value) %>%
+        mutate(flow_date = as_date(substr(flow_date, 2, nchar(flow_date))))
+    }) %>% arrange(flow_date) %>%
     mutate_if(is.numeric, function(c) round(c, 3)) ->
     WM_flows_all_dams_daily
 
   # convert to monthly for model calibration
   WM_flows_all_dams_daily %>%
-    mutate(year = as.integer(year(date)),
-           month = month(date, label = T),
+    mutate(year = as.integer(year(flow_date)),
+           month = month(flow_date, label = T),
            month = factor(as.character(month), levels = month.abb)) %>%
-    select(-date) %>%
+    select(-flow_date) %>%
     group_by(year, month) %>% summarise_if(is.double, mean) %>% ungroup() ->
     WM_all_flows_monthly
 
