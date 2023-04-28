@@ -115,14 +115,14 @@ read_gridview_plant_data <- function(){
 #'
 #' @description gets pmax, pmin, and water availability (observed)
 #' @param data_dir data directory containing hydrofixr consolidated inputs
-#' @param region "UC" (upper Colorado), "Col" (Columbia / PNW), "WECC"
+#' @param region "UC" (upper Colorado), "CRB" (Columbia / PNW), "WECC"
 #' @importFrom vroom vroom
 #' @export
 #'
 read_weekly_p_and_water <- function(data_dir, region){
 
-  if(!region %in% c("UC", "Col", "WECC")){
-    stop("Region must be either UC, Col, or WECC")
+  if(!region %in% c("UC", "CRB", "WECC")){
+    stop("Region must be either UC, CRB, or WECC")
   }
 
   # if(region == "UC"){
@@ -135,7 +135,7 @@ read_weekly_p_and_water <- function(data_dir, region){
   #   )
   # }
 
-  if(region == "Col"){
+  if(region == "CRB"){
     return(
       vroom(paste0(data_dir, "/USACE_PNW_weekly_mmm.csv"),
                    col_types = c("EIA_ID" = "i",
@@ -170,18 +170,18 @@ read_weekly_p_and_water <- function(data_dir, region){
 #'
 #' @description gets pmax, pmin, and water availability (observed)
 #' @param data_dir data directory containing hydrofixr consolidated inputs
-#' @param region "UC" (upper Colorado), "Col" (Columbia / PNW), "WECC"
+#' @param region "UC" (upper Colorado), "CRB" (Columbia / PNW), "WECC"
 #' @importFrom vroom vroom
 #' @export
 #'
 read_monthly_p_and_water <- function(data_dir, region){
 
-  if(!region %in% c("UC", "Col", "WECC")){
-    stop("Region must be either UC, Col, or WECC")
+  if(!region %in% c("UC", "CRB", "WECC")){
+    stop("Region must be either UC, CRB, or WECC")
   }
 
 
-  if(region == "Col"){
+  if(region == "CRB"){
     return(
       vroom(paste0(data_dir, "USACE_PNW_monthly_mmm.csv"),
                    col_types = c("EIA_ID" = "i",

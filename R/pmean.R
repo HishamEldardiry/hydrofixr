@@ -43,9 +43,9 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
     correct_lat_lon_for_MOSART_stream_network() %>%
     arrange(EIA_ID) ->
     plant_data
-
+	
+	
   # run through all result files to extract required flows for each cell
-  message("Extracting required flows for each cell...")
   list.files(WM_results_dir, full.names = T) %>%
     .[grep(".nc", .)] %>%
     map_dfr(function(slice){
@@ -143,6 +143,7 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
       calibration_data = calibration_data,
       #calibration_data = calibration_data %>% filter(!EIA_ID %in% plants_with_missing_data),
       WM_flows_all_dams_daily = WM_flows_all_dams_daily,
+	  WM_flows_all_dams_monthly=WM_all_flows_monthly,
       plant_data = plant_data
       )
     )

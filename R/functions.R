@@ -68,7 +68,7 @@ correct_lat_lon_for_MOSART_stream_network <- function(x){
 
   c("BPA", "SEPA", "SWPA", "WAPA") %>%
     map_dfr(function(region){
-      vroom(paste0(dir_,"/", region, ".csv"))
+      vroom(paste0(dir_, region, ".csv"))
     }
     ) %>%
     select(EIA_ID = ID, lat_1_8_, lon_1_8_) ->
@@ -143,3 +143,17 @@ gen_month_to_epiweek <- function(){
 }
 
 
+# generate hours per month
+gen_hrs_per_month <- function(){
+  tibble(date = seq(ISOdate(2001,1,1), to = ISOdate(2021,12,31), by = "day")) %>%
+    mutate(date = lubridate::date(date),
+           year = lubridate::year(date),
+           month = lubridate::month(date)) %>%
+    group_by(year, month) %>% summarise(n_days = n()) %>%
+    ungroup() %>% mutate(n_hours = n_days * 24) %>%
+    left_join(tibble(month = 1:12, month_abb = month.abb), by = "month") %>%
+    mutate(month = month_abb) %>%
+    select(year, month, n_hours)
+}
+
+n_hours <- gen_hrs_per_month()

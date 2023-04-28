@@ -1,4 +1,4 @@
-#' generate_WECC_parameters
+#' generate_parameters
 #'
 #' @param year year to be generated
 #' @param resolution resolution of output ("weekly", "monthly")
@@ -6,10 +6,10 @@
 #' @param WM_case path to WM simulation results
 #' @description gets p_mean, p_max, p_min for given water input, defined by year
 #' @importFrom dplyr filter select left_join mutate bind_rows mutate_if
-#' @return tibble of pmean, pmax, pmin for 317 WECC dams
+#' @return tibble of pmean, pmax, pmin for CONUS dams using parameters from CRB 
 #' @export
 #'
-generate_WECC_parameters <- function(year = 2009,
+generate_parameters <- function(year = 2009,
                                      resolution = "monthly",
                                      data_dir,
                                      WM_case = "/WM_dev_base_case_cropped/"){
@@ -18,7 +18,7 @@ generate_WECC_parameters <- function(year = 2009,
 
   if(resolution == "monthly"){
     message("Getting monthly average generation estimates...")
-        get_pmean(pcm = "gridview", NERC = "WECC",
+        get_pmean(pcm = "none", NERC = NULL,
                   data_dir = data_dir,
                   WM_case = WM_case,
                   mode = resolution, hyd_year = year) ->
@@ -39,7 +39,9 @@ generate_WECC_parameters <- function(year = 2009,
           select(EIA_ID, plant, state, bal_auth, mode, year, month,
                  mean = pmean_MW, max = pmax, min = pmin, capability, nameplate_HS, nameplate_EIA) ->
           p_all_basic
-
+		
+		
+		# since data for CRB is available, then no need to use the interpolation (linear model) approach. So use the actual data for CRB (without using the get_pmax_pmin_predictions()  function) 
         get_pmax_pmin_params("CRB", resolution, smooth_params = FALSE) %>%
           left_join(pmean_monthly_x, by = c("EIA_ID", "month")) %>%
           left_join(read_HydroSource() %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
@@ -52,7 +54,7 @@ generate_WECC_parameters <- function(year = 2009,
           p_CRB
 
         p_all_basic %>%
-          filter(!EIA_ID %in% p_CRB[["EIA_ID"]]) %>%
+          filter(!EIA_ID %in% p_CRB[["EIA_ID"]]) %>%    # replace CRB plants with the p_CRB rows which have more reliable data than using the get_pmax_pmin_predictions() function
           bind_rows(p_CRB) %>%
           mutate(year = as.integer(year), EIA_ID = as.character(EIA_ID)) %>%
           mutate_if(is.double, round, 3) %>%
@@ -68,7 +70,7 @@ generate_WECC_parameters <- function(year = 2009,
   if(resolution == "weekly"){
 
     message(" | Getting weekly average generation estimates...")
-    get_pmean(pcm = "gridview", NERC = "WECC", WM_results_dir = WM_results_dir,
+    get_pmean(pcm = "none", NERC = NULL, WM_results_dir = WM_results_dir,
               mode = "weekly", hyd_year = year) -> pmean_weekly_x
 
     message(" | Computing pmax and pmin parameters")
