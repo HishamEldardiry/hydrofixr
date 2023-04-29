@@ -2,8 +2,7 @@
 
 export("%>%")
 export(append_capabilities)
-export(dl_usace_generation)
-export(generate_WECC_parameters)
+export(generate_parameters)
 export(get_pmax_pmin_params)
 export(get_pmax_pmin_predictions)
 export(get_pmean)
