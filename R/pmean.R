@@ -54,10 +54,10 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
         # ^^ extract using dam lat and lon
         as_tibble() %>%
         gather(date, value, -ID) %>% spread(ID, value) %>%
-        mutate(date = as_date(substr(date, 2, nchar(date))))
+        mutate(flow_date = as_date(substr(date, 2, nchar(date))))
     })->tmp 
 	print(tmp)
-	tmp %>% arrange(date) %>%
+	tmp %>% arrange(flow_date) %>%
     mutate_if(is.numeric, function(c) round(c, 3)) ->
     WM_flows_all_dams_daily
 
