@@ -23,7 +23,7 @@ get_pmax_pmin_params <- function(zone, mode = "monthly", data_dir, smooth_params
       # read max, mean, min observations for CRB dams...
       # ... and join with HydroSource data to get capacities
       read_weekly_p_and_water(data_dir = data_dir, "CRB") %>%
-        left_join(read_HydroSource(data_dir), by = "EIA_ID") %>%
+        left_join(read_HydroSource(data_dir=data_dir), by = "EIA_ID") %>%
         select(EIA_ID, year, epiweek = week, max, mean, min, nameplate_HS = CH_MW) %>%
         append_capabilities(resolution = "weekly", data_dir = data_dir) %>%
         # constrain capacity (in case of error)

@@ -8,7 +8,7 @@
 #' @return tibble of hydrosource plant data, filtered for chosen NERC
 #' @export
 #'
-read_HydroSource <- function(data_dir, NERC = NULL){
+read_HydroSource <- function(data_dir=data_dir, NERC = NULL){
 
   vroom(paste0(data_dir, "/HydroSource_HYC.csv"),
         col_types = c("plant" = "c",
