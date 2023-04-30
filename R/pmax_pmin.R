@@ -158,7 +158,7 @@ get_pmax_pmin_params <- function(zone, mode = "monthly", data_dir, smooth_params
   if(zone == "WECC"){
 
     read_weekly_p_and_water(data_dir = data_dir, "WECC") %>%
-      left_join(read_HydroSource(), by = "EIA_ID") %>%
+      left_join(read_HydroSource(data_dir=data_dir), by = "EIA_ID") %>%
       select(EIA_ID, year, epiweek = week, max, mean, min, nameplate_HS = CH_MW) %>%
       append_capabilities("weekly") %>%
       mutate(capability = if_else(is.na(capability), nameplate_EIA, capability)) %>%
@@ -229,7 +229,7 @@ get_pmax_pmin_predictions <- function(zone='CRB',data_dir=data_dir){
     select(EIA_ID, max_param, min_param) %>%
     unique() -> max_min_params
 
-  read_HydroSource() %>%
+  read_HydroSource(data_dir=data_dir) %>%
     select(EIA_ID, mode, bal_auth, state) %>%
     right_join(max_min_params, by = "EIA_ID") ->
   max_min_params_by_BA_MODE_STATE
@@ -252,7 +252,7 @@ get_pmax_pmin_predictions <- function(zone='CRB',data_dir=data_dir){
               min_param_MODE = median(min_param)) ->
     param_by_mode
 
-  read_HydroSource() %>%
+  read_HydroSource(data_dir=data_dir) %>%
     select(EIA_ID, mode, bal_auth, state) %>%
     left_join(max_min_params, by = "EIA_ID") %>%
     left_join(param_by_BA, by = "bal_auth") %>%
