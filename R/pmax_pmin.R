@@ -223,9 +223,9 @@ get_pmax_pmin_params <- function(zone, mode = "monthly", data_dir, smooth_params
 #' @return
 #' @export
 #'
-get_pmax_pmin_predictions <- function(){
+get_pmax_pmin_predictions <- function(zone='CRB'){
 
-  get_pmax_pmin_params("WECC") %>%
+  get_pmax_pmin_params(zone) %>%    #### need to define the zone here.
     select(EIA_ID, max_param, min_param) %>%
     unique() -> max_min_params
 
@@ -274,4 +274,6 @@ get_pmax_pmin_predictions <- function(){
            min_param = if_else(is.na(min_param), median(min_param, na.rm = T), min_param)) %>%
     select(EIA_ID, max_param, min_param)
   }
+
+
 
