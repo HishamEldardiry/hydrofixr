@@ -223,9 +223,9 @@ get_pmax_pmin_params <- function(zone, mode = "monthly", data_dir, smooth_params
 #' @return
 #' @export
 #'
-get_pmax_pmin_predictions <- function(zone='CRB'){
+get_pmax_pmin_predictions <- function(zone='CRB',data_dir=data_dir){
 
-  get_pmax_pmin_params(zone) %>%    #### need to define the zone here.
+  get_pmax_pmin_params(zone,data_dir=data_dir) %>%    #### need to define the zone here.
     select(EIA_ID, max_param, min_param) %>%
     unique() -> max_min_params
 

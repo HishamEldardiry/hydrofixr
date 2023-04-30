@@ -27,7 +27,7 @@ generate_parameters <- function(year = 2009,
 
         message(" | Computing pmax and pmin parameters")
         pmean_monthly_x %>%
-          left_join(get_pmax_pmin_predictions(), by = "EIA_ID") %>%
+          left_join(get_pmax_pmin_predictions(zone='CRB',data_dir=data_dir), by = "EIA_ID") %>%
           left_join(read_HydroSource() %>%
                       select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                     by = "EIA_ID") %>% mutate(month = match(month, month.abb)) %>%
