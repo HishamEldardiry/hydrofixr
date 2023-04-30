@@ -44,7 +44,7 @@ generate_parameters <- function(year = 2009,
 		# since data for CRB is available, then no need to use the interpolation (linear model) approach. So use the actual data for CRB (without using the get_pmax_pmin_predictions()  function) 
         get_pmax_pmin_params("CRB", resolution, smooth_params = FALSE) %>%
           left_join(pmean_monthly_x, by = c("EIA_ID", "month")) %>%
-          left_join(read_HydroSource() %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
+          left_join(read_HydroSource(data_dir=data_dir) %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                     by = "EIA_ID") %>% mutate(month = match(month, month.abb)) %>%
           append_capabilities("monthly") %>%
           mutate(pmax = pmean_MW + (max_param * (capability - pmean_MW)),
@@ -76,7 +76,7 @@ generate_parameters <- function(year = 2009,
     message(" | Computing pmax and pmin parameters")
     pmean_weekly_x %>%
       left_join(get_pmax_pmin_predictions(), by = "EIA_ID") %>%
-      left_join(read_HydroSource() %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
+      left_join(read_HydroSource(data_dir=data_dir) %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                 by = "EIA_ID") %>%
       append_capabilities("weekly") %>%
       mutate(capability = if_else(is.na(capability), nameplate_EIA, capability)) %>%
@@ -88,7 +88,7 @@ generate_parameters <- function(year = 2009,
       p_all_basic
 
     get_pmax_pmin_params("CRB", "weekly", smooth_params = TRUE) %>%
-      left_join(read_HydroSource() %>%
+      left_join(read_HydroSource(data_dir=data_dir) %>%
                   select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                 by = "EIA_ID") %>%
       append_capabilities("weekly") %>%

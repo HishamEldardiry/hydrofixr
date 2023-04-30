@@ -17,10 +17,10 @@
 get_pmean_models <- function(pcm = "none", NERC = NULL,
                              data_dir, WM_case = "/WM_dev_base_case_cropped/"){
 
-  WM_results_dir <- paste0(data_dir, WM_case)
+  WM_results_dir <- paste0(data_dir, WM_case)   # paste0: combines the two characters together. so the directory for results=data_dir/WM_case
 
   # read hydrosource plants and create filted for desired PCM
-  read_HydroSource(data_dir = data_dir, NERC = NERC) ->
+  read_HydroSource(data_dir = data_dir) ->
     hydrosource
 
   if(pcm == "none"){
@@ -47,15 +47,15 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
 	
   # run through all result files to extract required flows for each cell
   list.files(WM_results_dir, full.names = T) %>%
-    .[grep(".nc", .)] %>%
+    .[grep(".nc", .)]%>%
     map_dfr(function(slice){
       brick(slice, varname = "RIVER_DISCHARGE_OVER_LAND_LIQ") %>%
         extract(select(plant_data, lon_, lat_), df = T) %>%
         # ^^ extract using dam lat and lon
-        as_tibble() %>%
-        gather(date, value, -ID) %>% spread(ID, value) %>%
-        mutate(date = as_date(substr(date, 2, nchar(date))))
-    }) %>% arrange(date) %>%
+        as_tibble() #%>%
+        #gather(flow_date, value, -ID) %>% spread(ID, value) %>%
+        #mutate(flow_date = as_date(substr(flow_date, 2, nchar(flow_date))))
+    })%>% arrange(flow_date) %>%
     mutate_if(is.numeric, function(c) round(c, 3)) ->
     WM_flows_all_dams_daily
 
