@@ -94,7 +94,7 @@ correct_lat_lon_for_MOSART_stream_network <- function(x){
 #' @return tibble of observed dam data (storage, inflow, release)
 #' @export
 #'
-append_capabilities <- function(x, resolution, data_dir){
+append_capabilities <- function(x, resolution, data_dir=data_dir){
 
   if(resolution != "weekly"){
     return(
