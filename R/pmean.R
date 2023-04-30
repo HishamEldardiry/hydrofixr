@@ -52,10 +52,10 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
       brick(slice, varname = "RIVER_DISCHARGE_OVER_LAND_LIQ") %>%
         extract(select(plant_data, lon_, lat_), df = T) %>%
         # ^^ extract using dam lat and lon
-        as_tibble() #%>%
-        #gather(flow_date, value, -ID) %>% spread(ID, value) %>%
-        #mutate(flow_date = as_date(substr(flow_date, 2, nchar(flow_date))))
-    })%>% arrange(flow_date) %>%
+        as_tibble() %>%
+        gather(date, value, -ID) %>% spread(ID, value) %>%
+        mutate(date = as_date(substr(date, 2, nchar(date))))
+    })%>% arrange(date) %>%
     mutate_if(is.numeric, function(c) round(c, 3)) ->
     WM_flows_all_dams_daily
 
