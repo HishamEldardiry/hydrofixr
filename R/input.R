@@ -219,7 +219,7 @@ read_monthly_p_and_water <- function(data_dir, region){
 #' @importFrom vroom vroom cols col_factor
 #' @export
 #'
-read_EIA_capabilities <- function(data_dir){
+read_EIA_capabilities <- function(data_dir=data_dir){
 
   vroom(paste0(data_dir, "/EIA_plant_capabilitiy.csv"),
         col_types = c("EIA_ID" = "i",
