@@ -46,7 +46,7 @@ generate_parameters <- function(year = 2009,
           left_join(pmean_monthly_x, by = c("EIA_ID", "month")) %>%
           left_join(read_HydroSource(data_dir=data_dir) %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                     by = "EIA_ID") %>% #mutate(month = match(month, month.abb)) %>%
-           append_capabilities("monthly") %>%
+           append_capabilities(data_dir=data_dir,"monthly") %>%
           mutate(pmax = pmean_MW + (max_param * (capability - pmean_MW)),
                  pmin = pmean_MW * min_param) %>%
           select(EIA_ID, plant, state, bal_auth, mode, year, month,
