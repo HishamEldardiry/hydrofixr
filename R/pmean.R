@@ -221,7 +221,7 @@ get_pmean <- function(pcm = "none", NERC = NULL,
 
   if(mode == "monthly"){
 
-    models$calibration_data %>%
+    models$WM_flows_all_dams_monthly %>%
       filter(year == hyd_year) %>%
       left_join(read_EIA_capabilities(data_dir = data_dir),
                 by = c("EIA_ID", "month")) %>%
