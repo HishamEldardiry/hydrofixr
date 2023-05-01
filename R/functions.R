@@ -101,6 +101,7 @@ append_capabilities <- function(x, resolution, data_dir=data_dir){
       x %>%
         left_join(read_EIA_capabilities(data_dir = data_dir),
                   by = c("EIA_ID", "month"))
+				  %>% select(EIA_ID,month, nameplate_EIA=nameplate, capability),
     )
   }else{
     x %>%
@@ -109,7 +110,7 @@ append_capabilities <- function(x, resolution, data_dir=data_dir){
           left_join(
             read_EIA_capabilities(data_dir = data_dir),
             by = "month"
-          ) %>% select(EIA_ID, epiweek, nameplate_EIA, capability),
+          ) %>% select(EIA_ID, epiweek, nameplate_EIA=nameplate, capability),
         by = c("EIA_ID", "epiweek")
       )
   }

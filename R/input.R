@@ -224,7 +224,7 @@ read_EIA_capabilities <- function(data_dir=data_dir){
   vroom(paste0(data_dir, "/EIA_plant_capabilitiy.csv"),
         col_types = c("EIA_ID" = "i",
                       "month" = "c",
-                      "nameplate_EIA" = "d",
+                      "nameplate" = "d",
                       "capability" = "d")) %>%
     mutate(month = factor(month, levels = month.abb))
 
