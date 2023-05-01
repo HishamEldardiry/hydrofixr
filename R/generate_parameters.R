@@ -32,12 +32,12 @@ generate_parameters <- function(year = 2009,
                       select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                     by = "EIA_ID") %>% #mutate(month = match(month, month.abb)) %>%
           append_capabilities(data_dir=data_dir,"monthly") %>%
-          mutate(capability = if_else(is.na(capability),nameplate_HS, capability)) %>%
+          mutate(capability = if_else(is.na(capability),nameplate_EIA, capability)) %>%
           mutate(pmean_MW = if_else(pmean_MW > capability, capability, pmean_MW)) %>%
           mutate(pmax = pmean_MW + (max_param * (capability - pmean_MW)),
                  pmin = pmean_MW * min_param) %>%
           select(EIA_ID, plant, state, bal_auth, mode, year, month,
-                 mean = pmean_MW, max = pmax, min = pmin, capability, nameplate_HS) ->
+                 mean = pmean_MW, max = pmax, min = pmin, capability, nameplate_HS, nameplate_EIA) ->
           p_all_basic
 		
 		
@@ -46,11 +46,11 @@ generate_parameters <- function(year = 2009,
           left_join(pmean_monthly_x, by = c("EIA_ID", "month")) %>%
           left_join(read_HydroSource(data_dir=data_dir) %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                     by = "EIA_ID") %>% #mutate(month = match(month, month.abb)) %>%
-          append_capabilities(data_dir=data_dir,"monthly") %>%
+           append_capabilities("monthly") %>%
           mutate(pmax = pmean_MW + (max_param * (capability - pmean_MW)),
                  pmin = pmean_MW * min_param) %>%
           select(EIA_ID, plant, state, bal_auth, mode, year, month,
-                 mean = pmean_MW, max = pmax, min = pmin, capability, nameplate_HS) ->
+                 mean = pmean_MW, max = pmax, min = pmin, capability, nameplate_HS, nameplate_EIA) ->
           p_CRB
 
         p_all_basic %>%
@@ -60,7 +60,7 @@ generate_parameters <- function(year = 2009,
           mutate_if(is.double, round, 3) %>%
           left_join(tibble(month = month.abb), by = "month") %>%
           select(EIA_ID, plant, state, bal_auth, mode, year, month,
-                 mean, max, min, capability, nameplate_HS) ->
+                 mean, max, min, capability, nameplate_EIA,nameplate_HS) ->
           p_all_monthly
 
         return(p_all_monthly)
