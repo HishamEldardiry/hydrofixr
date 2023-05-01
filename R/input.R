@@ -226,8 +226,8 @@ read_EIA_capabilities <- function(data_dir=data_dir){
                       "month" = "c",
                       "nameplate" = "d",
                       "capability" = "d")) %>%
-    mutate(month = factor(month, levels = month.abb))
-	%>% rename(nameplate_EIA = nameplate)
+    mutate(month = factor(month, levels = month.abb)) %>% 
+	rename(nameplate_EIA= nameplate)
 
 }
 
