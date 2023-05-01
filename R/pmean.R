@@ -205,7 +205,7 @@ get_pmean <- function(pcm = "none", NERC = NULL,
       left_join(calibrated_params,
                 by = c("EIA_ID", "month")) %>%
       left_join(read_EIA_capabilities(data_dir = data_dir)) %>%
-      mutate(capability = if_else(is.na(capability), nameplate, capability)) %>%
+      mutate(capability = if_else(is.na(capability), nameplate_EIA, capability)) %>%
       rowwise() %>%
       mutate(pmean = min(intercept + flow * slope, capability),
              pmean = max(0, pmean)) %>%
@@ -225,7 +225,7 @@ get_pmean <- function(pcm = "none", NERC = NULL,
       filter(year == hyd_year) %>%
       left_join(read_EIA_capabilities(data_dir = data_dir),
                 by = c("EIA_ID", "month")) %>%
-      mutate(capability = if_else(is.na(capability), nameplate, capability)) %>%
+      mutate(capability = if_else(is.na(capability), nameplate_EIA, capability)) %>%
       mutate(av_gen_predicted = if_else(av_gen_predicted > capability,
                                         capability, av_gen_predicted)) %>%
       select(EIA_ID, year, month, pmean_MW = av_gen_predicted) ->
