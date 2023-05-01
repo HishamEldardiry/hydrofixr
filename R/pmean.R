@@ -138,12 +138,30 @@ get_pmean_models <- function(pcm = "none", NERC = NULL,
     .[["EIA_ID"]] %>% unique() -> plants_with_missing_data
 
 
+
+	WM_all_flows_monthly %>%
+    gather(row_id, flow, -year, -month) %>%
+    mutate(row_id = as.integer(row_id)) %>%
+    left_join(plant_data %>% tibble::rowid_to_column("row_id"),
+              by = "row_id") %>%
+    select(year, month, EIA_ID, flow) ->
+    training_flows_all_years
+
+
+	training_flows_all_years %>%
+    left_join(calibrated_params, by = c("EIA_ID", "month")) %>%
+    left_join(plant_data %>% select(plant, EIA_ID),
+              by = "EIA_ID") %>%
+    mutate(av_gen_predicted = intercept + flow * slope) %>%
+    rowwise() %>% mutate(av_gen_predicted = max(0, av_gen_predicted)) %>% ungroup() ->
+    calibration_data_all_years
+  
   return(
     list(
       calibration_data = calibration_data,
       #calibration_data = calibration_data %>% filter(!EIA_ID %in% plants_with_missing_data),
       WM_flows_all_dams_daily = WM_flows_all_dams_daily,
-	  WM_flows_all_dams_monthly=WM_all_flows_monthly,
+	  calibration_data_all_years=calibration_data_all_years,
       plant_data = plant_data
       )
     )
@@ -221,7 +239,7 @@ get_pmean <- function(pcm = "none", NERC = NULL,
 
   if(mode == "monthly"){
 
-    models$WM_flows_all_dams_monthly %>%
+    models$calibration_data_all_years %>%
       filter(year == hyd_year) %>%
       left_join(read_EIA_capabilities(data_dir = data_dir),
                 by = c("EIA_ID", "month")) %>%
