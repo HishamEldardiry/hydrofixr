@@ -42,7 +42,7 @@ generate_parameters <- function(year = 2009,
 		
 		
 		# since data for CRB is available, then no need to use the interpolation (linear model) approach. So use the actual data for CRB (without using the get_pmax_pmin_predictions()  function) 
-        get_pmax_pmin_params("CRB", resolution, smooth_params = FALSE) %>%
+        get_pmax_pmin_params("CRB", resolution, data_dir=data_dir,smooth_params = FALSE) %>%
           left_join(pmean_monthly_x, by = c("EIA_ID", "month")) %>%
           left_join(read_HydroSource(data_dir=data_dir) %>% select(EIA_ID, nameplate_HS = CH_MW, plant, state, bal_auth, mode),
                     by = "EIA_ID") %>% #mutate(month = match(month, month.abb)) %>%
@@ -58,8 +58,8 @@ generate_parameters <- function(year = 2009,
           bind_rows(p_CRB) %>%
           mutate(year = as.integer(year), EIA_ID = as.character(EIA_ID)) %>%
           mutate_if(is.double, round, 3) %>%
-          left_join(tibble(month_abb = month.abb, month = 1:12), by = "month") %>%
-          select(EIA_ID, plant, state, bal_auth, mode, year, month = month_abb,
+          left_join(tibble(month = month.abb), by = "month") %>%
+          select(EIA_ID, plant, state, bal_auth, mode, year, month,
                  mean, max, min, capability, nameplate_HS) ->
           p_all_monthly
 
